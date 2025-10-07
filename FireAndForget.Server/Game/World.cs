@@ -6,42 +6,33 @@ public record struct Position(int X, int Y);
 
 public sealed class World
 {
-    private List<Player> _players = new();
+    private readonly List<Player> _players = new();
 
     public const int Width = 10;
     public const int Height = 10;
-
-    public bool[,] Walkable { get; set; } = new bool[Width, Height];
-
+    
+    public WorldGrid Grid { get; private set; }
+    
     public World()
     {
+        Grid = new WorldGrid(Width, Height);
+        
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
                 if (x > 0 && x < Width - 1 && y > 0 && y < Height - 1)
                 {
-                    Walkable[x, y] = true;
+                    Grid.UnblockTile(new Position(x, y));
                 }
                 else
                 {
-                    Walkable[x, y] = false;
+                    Grid.BlockTile(new Position(x, y));
                 }
             }
         }
-
-        Walkable[5, 5] = false;
-    }
-
-    public bool IsWalkable(Position pos)
-    {
-        //if (GetActorAt(pos) != null)
-        //    return false;
-
-        if (pos.X < 0 || pos.X >= Width || pos.Y < 0 || pos.Y >= Height)
-            return false;
-
-        return Walkable[pos.X, pos.Y];
+        
+        Grid.BlockTile(new Position(5, 5)); 
     }
 
     public void Update(TimeSpan tickRate)
@@ -51,7 +42,7 @@ public sealed class World
 
     public void OnPlayerJoined(GameSession session)
     {
-
+        
     }
 
     public void OnPlayerLeft(GameSession session)
