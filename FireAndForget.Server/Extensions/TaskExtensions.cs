@@ -1,4 +1,4 @@
-﻿namespace FireAndForget.Server.Utils;
+﻿namespace FireAndForget.Server.Extensions;
 
 public static class TaskExtensions
 {
